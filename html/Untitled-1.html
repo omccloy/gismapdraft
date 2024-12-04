@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>3D Buildings Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <link
+        href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css"
+        rel="stylesheet"
+    />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        // Your Mapbox access token
+        mapboxgl.accessToken = 'pk.eyJ1IjoibWNjbGl2aW4iLCJhIjoiY2xvaHRndTZjMTc5ZTJpcDkzdnU4ajl5OSJ9.ooSPJVrvlbTQiWwbHkdYTQ';
+
+        // Initialize the Mapbox map
+        const map = new mapboxgl.Map({
+            container: 'map', // Container ID
+            style: 'mapbox://styles/mcclivin/cm40an58i00i301s3a6egbpz3', // Your custom style
+            center: [-74.006, 40.7128], // Initial map center (Longitude, Latitude)
+            zoom: 15, // Initial zoom level
+            pitch: 45, // Tilt the map for 3D effect
+            bearing: -17.6, // Rotate the map
+            antialias: true, // Smooth edges
+        });
+
+        map.on('load', () => {
+            // Add a layer for 3D buildings
+            map.addLayer({
+                id: '3d-buildings',
+                source: 'composite',
+                'source-layer': 'building', // Default Mapbox vector tileset source-layer for buildings
+                type: 'fill-extrusion',
+                minzoom: 15, // Only show buildings at higher zoom levels
+                paint: {
+                    'fill-extrusion-color': '#aaa', // Default color for 3D buildings
+                    'fill-extrusion-height': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        15, 0,
+                        16, ['get', 'height']
+                    ], // Dynamically scale height based on zoom
+                    'fill-extrusion-base': 0,
+                    'fill-extrusion-opacity': 0.6, // Slight transparency
+                },
+            });
+        });
+    </script>
+</body>
+</html>
